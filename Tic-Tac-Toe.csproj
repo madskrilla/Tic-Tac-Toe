@@ -302,6 +302,7 @@
     <Compile Include="Assets\Scripts\Messages\GameOverMsg.cs" />
     <Compile Include="Assets\Scripts\Messages\ResetGameMsg.cs" />
     <Compile Include="Assets\Scripts\Messages\ResizeBoardMsg.cs" />
+    <Compile Include="Assets\Scripts\Messages\SymbolSelectionMsg.cs" />
     <Compile Include="Assets\Scripts\Messages\TileSelectedMsg.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\TileMB.cs" />
@@ -309,9 +310,12 @@
     <Compile Include="Assets\Scripts\UI Scripts\GameOverMenuMB.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\ResizeBoardButtonMB.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\SettingsButtonMB.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\SettingsMenuMB.cs" />
+    <Compile Include="Assets\Scripts\UI Scripts\SymbolSelectMenuMB.cs" />
     <Compile Include="Assets\Scripts\Utilities\BoardEvaluator.cs" />
     <Compile Include="Assets\Scripts\Utilities\Message.cs" />
     <Compile Include="Assets\Scripts\Utilities\Messenger.cs" />
+    <Compile Include="Assets\Scripts\Utilities\RandomNumberUtil.cs" />
     <Compile Include="Assets\Scripts\WinLineMB.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />

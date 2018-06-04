@@ -10,5 +10,6 @@ public class ResizeBoardButtonMB : MonoBehaviour
     {
         resizeMsg.Size = size;
         Messenger.GetInstance().BroadCastMessage(resizeMsg);
+        gameObject.SetActive(false);
     }
 }

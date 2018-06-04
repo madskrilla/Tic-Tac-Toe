@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -13,6 +14,13 @@ public class GameOverMenuMB : MonoBehaviour
     void Start()
     {
         Messenger.GetInstance().RegisterListener(new GameOverMsg(), ActivateGameOverMenu);
+        Messenger.GetInstance().RegisterListener(new ResetGameMsg(), ResetMenu);
+
+        gameObject.SetActive(false);
+    }
+
+    private void ResetMenu(Message msg)
+    {
         gameObject.SetActive(false);
     }
 

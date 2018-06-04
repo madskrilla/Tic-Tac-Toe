@@ -67,6 +67,11 @@ public class TileMB : MonoBehaviour
         }
     }
 
+    public void SetPlayerSymbols(Sprite playerOne, Sprite playerTwo)
+    {
+        playerSymbols = new Sprite[] { playerOne, playerTwo };
+    }
+
     public void SetSelectedStatus(TileState state)
     {
         selectedState = state;

@@ -5,7 +5,10 @@ using UnityEngine;
 public class SettingsButtonMB : MonoBehaviour
 {
     [SerializeField]
+    private GameObject SettingsMenuParent;
+    [SerializeField]
     private GameObject SettingsMenu;
+
 
     // Use this for initialization
     void Start()
@@ -18,6 +21,7 @@ public class SettingsButtonMB : MonoBehaviour
 
     public void ToggleSettingsActive()
     {
-        SettingsMenu.SetActive(!SettingsMenu.activeSelf);
+        SettingsMenu.SetActive(!SettingsMenuParent.activeSelf);
+        SettingsMenuParent.SetActive(!SettingsMenuParent.activeSelf);
     }
 }

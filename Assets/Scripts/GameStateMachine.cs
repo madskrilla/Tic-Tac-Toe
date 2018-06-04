@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,7 +34,11 @@ public class GameStateMachine : MonoBehaviour
     private State currentState;
 
     private TileMB[] board;
-    private int boardSize = 3;
+    private int boardSize = 0;
+    public int BoardSize
+    {
+        get { return boardSize; }
+    }
     private BoardEvaluator evaluator;
     private BoardEvaluator.WinInfo evalResult;
     private int turnCount = 0;
@@ -50,7 +55,7 @@ public class GameStateMachine : MonoBehaviour
     void Start()
     {
         AddState(new State("WaitForPick", null));
-        AddState(new State("Evaluate",EvaluateGameState));
+        AddState(new State("Evaluate", EvaluateGameState));
         AddState(new State("GameOver", GameOver));
 
         SwitchState("WaitForPick");
@@ -58,13 +63,12 @@ public class GameStateMachine : MonoBehaviour
         Messenger.GetInstance().RegisterListener(new TileSelectedMsg(), WaitForPick);
         Messenger.GetInstance().RegisterListener(new ResetGameMsg(), Reset);
         Messenger.GetInstance().RegisterListener(new ResizeBoardMsg(), ResizeBoard);
+        Messenger.GetInstance().RegisterListener(new SymbolSelectionMsg(), SetPlayerSymbol);
 
         sessionHistory = new History();
         sessionHistory.StartNewGame();
-
-        PlayerOneSymbol.color = activePlayerColor;
-        PlayerTwoSymbol.color = inactivePlayerColor;
     }
+
 
     // Update is called once per frame
     void Update()
@@ -87,6 +91,25 @@ public class GameStateMachine : MonoBehaviour
         DestroyGameBoard();
         CreateGameBoard(boardSize);
         evaluator = new BoardEvaluator(boardSize);
+
+#if UNITY_EDITOR
+        
+#endif
+    }
+
+    private void SetPlayerSymbol(Message msg)
+    {
+        SymbolSelectionMsg selection = msg as SymbolSelectionMsg;
+        if (selection.player == 0)
+        {
+            PlayerOneSymbol.sprite = selection.symbol;
+            PlayerOneSymbol.color = activePlayerColor;
+        }
+        else
+        {
+            PlayerTwoSymbol.sprite = selection.symbol; 
+            PlayerTwoSymbol.color = inactivePlayerColor;
+        }
     }
 
     public void Reset(Message msg)
@@ -116,6 +139,7 @@ public class GameStateMachine : MonoBehaviour
         Messenger.GetInstance().UnregisterListener(new TileSelectedMsg(), WaitForPick);
         Messenger.GetInstance().UnregisterListener(new ResetGameMsg(), Reset);
         Messenger.GetInstance().UnregisterListener(new ResizeBoardMsg(), ResizeBoard);
+        Messenger.GetInstance().UnregisterListener(new SymbolSelectionMsg(), SetPlayerSymbol);
     }
 
     private void AddState(State newState)
@@ -132,7 +156,7 @@ public class GameStateMachine : MonoBehaviour
         Debug.Log(string.Format("Switching to {0} State!", nextState));
         if (currentState.stateAction != null)
         {
-            currentState.stateAction(); 
+            currentState.stateAction();
         }
     }
 
@@ -150,11 +174,16 @@ public class GameStateMachine : MonoBehaviour
             {
                 int tileIndex = i + (j * size);
                 GameObject newTile = GameObject.Instantiate<GameObject>(TilePrefab);
+                //Initialize Object Transform
                 newTile.transform.parent = BoardCenter;
                 newTile.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
                 newTile.transform.position = topLeft + new Vector2(i * tileSize.x, j * -tileSize.y);
-                newTile.GetComponent<TileMB>().tileIndex = tileIndex;
-                board[tileIndex] = newTile.GetComponent<TileMB>();
+
+                //Initialize Tile Settings
+                TileMB tile = newTile.GetComponent<TileMB>();
+                tile.tileIndex = tileIndex;
+                tile.SetPlayerSymbols(PlayerOneSymbol.sprite, PlayerTwoSymbol.sprite);
+                board[tileIndex] = tile;
             }
         }
     }
@@ -166,7 +195,7 @@ public class GameStateMachine : MonoBehaviour
             foreach (TileMB tile in board)
             {
                 GameObject.Destroy(tile.gameObject);
-            } 
+            }
         }
     }
 
@@ -178,7 +207,7 @@ public class GameStateMachine : MonoBehaviour
             TileSelectedMsg tileSelected = msg as TileSelectedMsg;
             lastSelectedTile = tileSelected.SelectedIndex;
             TileMB.TileState tileOwner = playerOne ? TileMB.TileState.PLAYER1 : TileMB.TileState.PLAYER2;
-            board[lastSelectedTile].SetSelectedStatus( tileOwner);
+            board[lastSelectedTile].SetSelectedStatus(tileOwner);
             sessionHistory.AddMoveToRecord(lastSelectedTile, (int)tileOwner);
             Debug.Log(string.Format("Tile {0} Was Selected", lastSelectedTile));
             SwitchState("Evaluate");
@@ -217,7 +246,7 @@ public class GameStateMachine : MonoBehaviour
             Vector2 tileSize = TilePrefab.GetComponent<SpriteRenderer>().size;
             Vector2 halfSize = new Vector2(tileSize.x * 0.5f, tileSize.y * 0.5f);
             msg.winStartPos += new Vector3(halfSize.x, -halfSize.y, 0);
-            msg.winEndPos += new Vector3(halfSize.x, -halfSize.y, 0); 
+            msg.winEndPos += new Vector3(halfSize.x, -halfSize.y, 0);
         }
         else
         {
@@ -226,4 +255,33 @@ public class GameStateMachine : MonoBehaviour
 
         Messenger.GetInstance().BroadCastMessage(msg);
     }
+
+#region Debug Code
+
+    public struct DebugSettings
+    {
+        public int[] tileSelections;
+        public float playBackSpeed;
+    }
+
+    public void PlayDebugGame(DebugSettings settings)
+    {
+        Messenger.GetInstance().BroadCastMessage(new ResetGameMsg());
+        StartCoroutine(SelectTilesCoroutine(settings));
+    }
+
+    private IEnumerator SelectTilesCoroutine(DebugSettings settings)
+    {
+        WaitForSeconds delayBetweenMoves = new WaitForSeconds(1f / settings.playBackSpeed);
+        int[] moves = settings.tileSelections;
+        for (int i = 0; i < moves.Length; i++)
+        {
+            TileSelectedMsg msg = new TileSelectedMsg();
+            msg.SelectedIndex = moves[i];
+            Messenger.GetInstance().BroadCastMessage(msg);
+
+            yield return delayBetweenMoves;
+        }
+    }
+#endregion
 }

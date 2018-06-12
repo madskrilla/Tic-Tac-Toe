@@ -120,7 +120,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.2, y: 1.2}
+    oldSize: {x: 1.55, y: 1.55}
     newSize: {x: 1.2, y: 1.2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -158,8 +158,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerSymbols:
-  - {fileID: 21300000, guid: 939e23c9d736c9c41a946d6e53927897, type: 3}
-  - {fileID: 21300000, guid: b26f4af0c0849fb4799fd19fff9e8d5c, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   symbolRenderer: {fileID: 212857514694110868}
   glowParticles: {fileID: 198911162302160196}
   tileIndex: -1
@@ -3663,7 +3663,7 @@ SpriteRenderer:
   m_SortingLayerID: 821134511
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 3d81a83f9c54c4a479e1e1f7ac062c3e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ae1ca6ed9153ff74ca77438f0b76ceb4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

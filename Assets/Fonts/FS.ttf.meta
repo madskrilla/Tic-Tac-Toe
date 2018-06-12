@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: d0ce16ec75e006b4da73324318836534
+timeCreated: 1528830669
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: zapristi! eYe/FS
+  fontNames:
+  - zapristi! eYe/FS
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

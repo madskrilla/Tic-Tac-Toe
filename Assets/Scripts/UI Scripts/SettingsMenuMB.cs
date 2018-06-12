@@ -8,21 +8,28 @@ public class SettingsMenuMB : MonoBehaviour
     private GameObject boardSelectionMenu;
     [SerializeField]
     private GameObject symbolSelectionMenu;
+    private Animator menuController;
 
     private void Start()
     {
-        gameObject.SetActive(false);
+        menuController = GetComponent<Animator>();
     }
 
     public void ActivateBoardSelectionMenu()
     {
-        boardSelectionMenu.SetActive(true);
-        gameObject.SetActive(false);
+        Messenger.GetInstance().BroadCastMessage(new OpenBoardSelectMenuMsg());
+        ToggleMenuActive();
     }
 
     public void ActivateSymbolSelectionMenu()
     {
-        symbolSelectionMenu.SetActive(true);
-        gameObject.SetActive(false);
+        Messenger.GetInstance().BroadCastMessage(new OpenSymbolSelectMenuMsg());
+        ToggleMenuActive();
+    }
+
+    public void ToggleMenuActive()
+    {
+        bool show = menuController.GetBool("Show");
+        menuController.SetBool("Show", !show);
     }
 }

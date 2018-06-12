@@ -6,6 +6,8 @@ public class WinLineMB : MonoBehaviour
 {
     [SerializeField]
     private LineRenderer winLine;
+    [SerializeField]
+    private float drawTime = 0.75f;
 
     // Use this for initialization
     void Start()
@@ -28,7 +30,41 @@ public class WinLineMB : MonoBehaviour
         if (gameOverMsg.winner != TileMB.TileState.OPEN)
         {
             winLine.gameObject.SetActive(true);
-            winLine.SetPositions(new Vector3[] { gameOverMsg.winStartPos, gameOverMsg.winEndPos }); 
+            StartCoroutine(DrawWinLine(gameOverMsg.winStartPos, gameOverMsg.winEndPos));
+        }
+    }
+
+    private IEnumerator DrawWinLine(Vector3 startPos, Vector3 endPos)
+    {
+        Vector3 currPos;
+        float time;
+        float timePassed;
+
+        while (true)
+        {
+            currPos = startPos;
+            time = 0f;
+            while (currPos != endPos)
+            {
+                timePassed = time / drawTime;
+                currPos = Vector3.Lerp(startPos, endPos, timePassed);
+                winLine.SetPositions(new Vector3[] { startPos, currPos });
+                time += Time.deltaTime;
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(0.15f);
+
+            currPos = startPos;
+            time = 0f;
+            while (currPos != endPos)
+            {
+                timePassed = time / drawTime;
+                currPos = Vector3.Lerp(startPos, endPos, timePassed);
+                winLine.SetPositions(new Vector3[] { currPos, endPos });
+                time += Time.deltaTime;
+                yield return null;
+            }
         }
     }
 

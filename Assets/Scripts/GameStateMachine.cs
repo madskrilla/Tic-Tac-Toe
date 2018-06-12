@@ -2,16 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameStateMachine : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject TilePrefab;
-    [SerializeField]
-    private Transform BoardCenter;
     [SerializeField]
     private Image PlayerOneSymbol;
     [SerializeField]
@@ -33,19 +28,13 @@ public class GameStateMachine : MonoBehaviour
     private Dictionary<string, State> states = new Dictionary<string, State>();
     private State currentState;
 
-    private TileMB[] board;
-    private int boardSize = 0;
-    public int BoardSize
-    {
-        get { return boardSize; }
-    }
-    private BoardEvaluator evaluator;
-    private BoardEvaluator.WinInfo evalResult;
-    private int turnCount = 0;
-    private History sessionHistory;
+    private GameBoard gameBoard;
+
+    private int turnCount = 1;
 
     private int lastSelectedTile = -1;
     private bool playerOne = true;
+    private BoardEvaluator.WinInfo evalResult;
 
     public GameStateMachine()
     {
@@ -54,19 +43,30 @@ public class GameStateMachine : MonoBehaviour
 
     void Start()
     {
+        AddState(new State("SetPlayerIcons", OpenIconMenu));
+        AddState(new State("SelectBoardSize", OpenBoardSizeMenu));
         AddState(new State("WaitForPick", null));
         AddState(new State("Evaluate", EvaluateGameState));
         AddState(new State("GameOver", GameOver));
 
-        SwitchState("WaitForPick");
+        SwitchState("SetPlayerIcons");
 
         Messenger.GetInstance().RegisterListener(new TileSelectedMsg(), WaitForPick);
         Messenger.GetInstance().RegisterListener(new ResetGameMsg(), Reset);
         Messenger.GetInstance().RegisterListener(new ResizeBoardMsg(), ResizeBoard);
         Messenger.GetInstance().RegisterListener(new SymbolSelectionMsg(), SetPlayerSymbol);
 
-        sessionHistory = new History();
-        sessionHistory.StartNewGame();
+        gameBoard = GetComponent<GameBoard>();
+    }
+
+    private void OpenBoardSizeMenu()
+    {
+        Messenger.GetInstance().BroadCastMessage(new OpenBoardSelectMenuMsg());
+    }
+
+    private void OpenIconMenu()
+    {
+        Messenger.GetInstance().BroadCastMessage(new OpenSymbolSelectMenuMsg());
     }
 
 
@@ -86,15 +86,11 @@ public class GameStateMachine : MonoBehaviour
     private void ResizeBoard(Message msg)
     {
         ResizeBoardMsg resizeMsg = msg as ResizeBoardMsg;
-        boardSize = resizeMsg.Size;
 
-        DestroyGameBoard();
-        CreateGameBoard(boardSize);
-        evaluator = new BoardEvaluator(boardSize);
+        gameBoard.SetPlayerSymbols(PlayerOneSymbol.sprite, PlayerTwoSymbol.sprite);
+        gameBoard.CreateGameBoard(resizeMsg.Size);
 
-#if UNITY_EDITOR
-        
-#endif
+        SwitchState("WaitForPick");
     }
 
     private void SetPlayerSymbol(Message msg)
@@ -109,6 +105,14 @@ public class GameStateMachine : MonoBehaviour
         {
             PlayerTwoSymbol.sprite = selection.symbol; 
             PlayerTwoSymbol.color = inactivePlayerColor;
+            if (gameBoard.BoardSize == 0)
+            {
+                SwitchState("SelectBoardSize");
+            }
+            else
+            {
+                ResetGame();
+            }
         }
     }
 
@@ -119,10 +123,7 @@ public class GameStateMachine : MonoBehaviour
 
     private void ResetGame()
     {
-        foreach (TileMB tile in board)
-        {
-            tile.ResetTile();
-        }
+        gameBoard.ResetBoard();
 
         SwitchState("WaitForPick");
 
@@ -130,8 +131,7 @@ public class GameStateMachine : MonoBehaviour
         PlayerOneSymbol.color = activePlayerColor;
         PlayerTwoSymbol.color = inactivePlayerColor;
 
-        turnCount = 0;
-        sessionHistory.StartNewGame();
+        turnCount = 1;
     }
 
     void OnDestroy()
@@ -160,45 +160,6 @@ public class GameStateMachine : MonoBehaviour
         }
     }
 
-    private void CreateGameBoard(int size)
-    {
-        board = new TileMB[size * size];
-        Vector2 topLeft = new Vector2();
-        Vector2 tileSize = TilePrefab.GetComponent<SpriteRenderer>().size;
-
-        topLeft.x = BoardCenter.position.x - (tileSize.x * (size * 0.5f));
-        topLeft.y = BoardCenter.position.y + (tileSize.y * (size * 0.5f));
-        for (int i = 0; i < size; i++)
-        {
-            for (int j = 0; j < size; j++)
-            {
-                int tileIndex = i + (j * size);
-                GameObject newTile = GameObject.Instantiate<GameObject>(TilePrefab);
-                //Initialize Object Transform
-                newTile.transform.parent = BoardCenter;
-                newTile.hideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector;
-                newTile.transform.position = topLeft + new Vector2(i * tileSize.x, j * -tileSize.y);
-
-                //Initialize Tile Settings
-                TileMB tile = newTile.GetComponent<TileMB>();
-                tile.tileIndex = tileIndex;
-                tile.SetPlayerSymbols(PlayerOneSymbol.sprite, PlayerTwoSymbol.sprite);
-                board[tileIndex] = tile;
-            }
-        }
-    }
-
-    private void DestroyGameBoard()
-    {
-        if (board != null)
-        {
-            foreach (TileMB tile in board)
-            {
-                GameObject.Destroy(tile.gameObject);
-            }
-        }
-    }
-
     private void WaitForPick(Message msg)
     {
         //Ignore Tile Selection Msg if Not Waiting For Pick
@@ -207,8 +168,8 @@ public class GameStateMachine : MonoBehaviour
             TileSelectedMsg tileSelected = msg as TileSelectedMsg;
             lastSelectedTile = tileSelected.SelectedIndex;
             TileMB.TileState tileOwner = playerOne ? TileMB.TileState.PLAYER1 : TileMB.TileState.PLAYER2;
-            board[lastSelectedTile].SetSelectedStatus(tileOwner);
-            sessionHistory.AddMoveToRecord(lastSelectedTile, (int)tileOwner);
+            gameBoard.SelectTile(lastSelectedTile, tileOwner);
+
             Debug.Log(string.Format("Tile {0} Was Selected", lastSelectedTile));
             SwitchState("Evaluate");
         }
@@ -216,8 +177,8 @@ public class GameStateMachine : MonoBehaviour
 
     private void EvaluateGameState()
     {
-        evalResult = evaluator.EvaluateBoard(board, lastSelectedTile);
-        if (evalResult.winPresent == true || turnCount >= board.Length - 1)
+        evalResult = gameBoard.EvaluateBoard(lastSelectedTile);
+        if (evalResult.winPresent || turnCount == gameBoard.MaxTurns)
         {
             SwitchState("GameOver");
         }
@@ -239,14 +200,8 @@ public class GameStateMachine : MonoBehaviour
         if (evalResult.winPresent)
         {
             msg.winner = playerOne ? TileMB.TileState.PLAYER1 : TileMB.TileState.PLAYER2;
-            msg.winStartPos = evalResult.winStart.position;
-            msg.winEndPos = evalResult.winEnd.position;
-
-            //Shifting Tile Positions From Topleft to Center
-            Vector2 tileSize = TilePrefab.GetComponent<SpriteRenderer>().size;
-            Vector2 halfSize = new Vector2(tileSize.x * 0.5f, tileSize.y * 0.5f);
-            msg.winStartPos += new Vector3(halfSize.x, -halfSize.y, 0);
-            msg.winEndPos += new Vector3(halfSize.x, -halfSize.y, 0);
+            msg.winStartPos = evalResult.winTiles[0];
+            msg.winEndPos = evalResult.winTiles[gameBoard.BoardSize - 1];
         }
         else
         {

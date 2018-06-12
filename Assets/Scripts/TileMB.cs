@@ -20,6 +20,9 @@ public class TileMB : MonoBehaviour
     private Sprite[] playerSymbols;
     [SerializeField]
     private SpriteRenderer symbolRenderer;
+    [SerializeField]
+    private ParticleSystem glowParticles;
+
     private Collider2D tileCollider;
     public int tileIndex = -1;
 
@@ -38,6 +41,11 @@ public class TileMB : MonoBehaviour
 
     }
 
+    public Vector3 GetCenter()
+    {
+        return transform.position;
+    }
+
     private void OnDestroy()
     {
         Messenger.GetInstance().UnregisterListener(new GameOverMsg(), GameOver);
@@ -47,8 +55,24 @@ public class TileMB : MonoBehaviour
     {
         if (EventSystem.current.IsPointerOverGameObject() == false)
         {
+            GetComponent<SpriteRenderer>().color = Color.gray;
             AttempSelection(); 
         }
+    }
+
+    private void OnMouseUp()
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
+    private void OnMouseEnter()
+    {
+        glowParticles.Play();
+    }
+
+    private void OnMouseExit()
+    {
+        glowParticles.Stop();
     }
 
     private void AttempSelection()
@@ -61,8 +85,10 @@ public class TileMB : MonoBehaviour
         {
             tileCollider.enabled = false;
 
-            TileSelectedMsg msg = new TileSelectedMsg();
-            msg.SelectedIndex = tileIndex;
+            TileSelectedMsg msg = new TileSelectedMsg
+            {
+                SelectedIndex = tileIndex
+            };
             Messenger.GetInstance().BroadCastMessage(msg);
         }
     }
@@ -86,6 +112,25 @@ public class TileMB : MonoBehaviour
             default:
                 break;
         }
+
+        StartCoroutine(FadeSymbolOn());
+    }
+
+    private IEnumerator FadeSymbolOn()
+    {
+        Color baseColor = symbolRenderer.color;
+        float alpha = 0;
+        float lerpTime = 0;
+
+        while (baseColor.a < 255f)
+        {
+            alpha = Mathf.Lerp(0, 1, lerpTime / .5f);
+            symbolRenderer.color = new Color(baseColor.r, baseColor.g, baseColor.b, alpha);
+            lerpTime += Time.deltaTime;
+            yield return null;
+        }
+
+        yield break;
     }
 
     private void GameOver(Message msg)

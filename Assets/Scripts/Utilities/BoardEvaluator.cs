@@ -10,8 +10,7 @@ public class BoardEvaluator
     public struct WinInfo
     {
         public bool winPresent;
-        public Transform winStart;
-        public Transform winEnd;
+        public Vector3[] winTiles;
     }
     private WinInfo winResult;
 
@@ -24,15 +23,20 @@ public class BoardEvaluator
     {
         curBoard = board;
         winResult.winPresent = false;
+        winResult.winTiles = new Vector3[boardSize];
         TileMB.TileState selectedState = board[lastSelection].SelectedState;
         int tileRow = lastSelection / boardSize;
         int tileCol = lastSelection % boardSize;
         //Check the Collumn and Row of The Last Selection
-        CheckCollumnWin(tileCol, selectedState);
-        CheckRowWin(tileRow, selectedState);
+        if (CheckCollumnWin(tileCol, selectedState))
+            return winResult;
+        else if (CheckRowWin(tileRow, selectedState))
+            return winResult;
         //Always Check Diagonals
-        CheckDiagonalWinLeft(selectedState);
-        CheckDiagonalWinRight(selectedState);
+        else if (CheckDiagonalWinLeft(selectedState))
+            return winResult;
+        else if (CheckDiagonalWinRight(selectedState))
+            return winResult;
 
         return winResult;
     }
@@ -47,14 +51,10 @@ public class BoardEvaluator
             {
                 return false;
             }
+            winResult.winTiles[i] = curBoard[tileIndex].GetCenter();
         }
 
         winResult.winPresent = true;
-        Transform start = curBoard[evalCol + (0 * boardSize)].transform;
-        Transform end = curBoard[evalCol + ((boardSize - 1) * boardSize)].transform;
-        winResult.winStart = start;
-        winResult.winEnd = end;
-
         return true;
     }
 
@@ -68,14 +68,10 @@ public class BoardEvaluator
             {
                 return false;
             }
+            winResult.winTiles[i] = curBoard[tileIndex].GetCenter();
         }
 
         winResult.winPresent = true;
-        Transform start = curBoard[0 + (evalRow * boardSize)].transform;
-        Transform end = curBoard[(boardSize - 1) + (evalRow * boardSize)].transform;
-        winResult.winStart = start;
-        winResult.winEnd = end;
-
         return true;
     }
 
@@ -88,15 +84,11 @@ public class BoardEvaluator
             if (curBoard[tileIndex].SelectedState != evalState)
             {
                 return false;
-            } 
+            }
+            winResult.winTiles[i] = curBoard[tileIndex].GetCenter();
         }
 
         winResult.winPresent = true;
-        Transform start = curBoard[0].transform;
-        Transform end = curBoard[(boardSize - 1) + ((boardSize- 1) * boardSize)].transform;
-        winResult.winStart = start;
-        winResult.winEnd = end;
-
         return true;
     }
 
@@ -104,22 +96,20 @@ public class BoardEvaluator
     {
         int tileIndex;
         int largestIndex = boardSize * boardSize - 1;
+        int listIndex = 0;
         //Start Eval At TopRight Tile And Move Down and Right Until i is Beyond the Board Bounds
-        for (int i = boardSize - 1; i < largestIndex; i += boardSize -1)
+        for (int i = boardSize - 1; i < largestIndex; i += boardSize - 1)
         {
             tileIndex = i;
             if (curBoard[tileIndex].SelectedState != evalState)
             {
                 return false;
             }
+            winResult.winTiles[listIndex] = curBoard[tileIndex].GetCenter();
+            listIndex++;
         }
 
         winResult.winPresent = true;
-        Transform start = curBoard[(boardSize - 1)].transform;
-        Transform end = curBoard[((boardSize - 1) * boardSize)].transform;
-        winResult.winStart = start;
-        winResult.winEnd = end;
-
         return true;
     }
 }

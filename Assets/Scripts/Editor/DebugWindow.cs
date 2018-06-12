@@ -13,7 +13,9 @@ public class DebugWindow : EditorWindow
         DRAW
     }
 
-    private GameStateMachine gameSM;
+    private GameBoard gameBoard;
+    private BigWinMB bigWin;
+    private bool coinsActive, bigWinActive;
 
     private float playBackSpeed = 1f;
 
@@ -35,9 +37,14 @@ public class DebugWindow : EditorWindow
 
     private void OnGUI()
     {
-        if (gameSM == null)
+        if (gameBoard == null)
         {
-            gameSM = GameObject.FindObjectOfType<GameStateMachine>();
+            gameBoard = GameObject.FindObjectOfType<GameBoard>();
+        }
+
+        if (bigWin == null)
+        {
+            bigWin = GameObject.FindObjectOfType<BigWinMB>();
         }
 
         DisplayOutcomeOptions();
@@ -61,7 +68,7 @@ public class DebugWindow : EditorWindow
         {
             string label = selectedWinType == 0 ? "Row" : "Collumn";
             GUILayout.Label(label);
-            string[] displayOptions = new string[gameSM.BoardSize];
+            string[] displayOptions = new string[gameBoard.BoardSize];
             for (int i = 0; i < displayOptions.Length; i++)
             {
                 displayOptions[i] = lineChoices[i];
@@ -82,12 +89,55 @@ public class DebugWindow : EditorWindow
 
         playBackSpeed = EditorGUILayout.Slider("Playback Speed", playBackSpeed, 1, 4, new GUILayoutOption[0]);
 
-        if (Application.isPlaying && gameSM.BoardSize != 0)
+        if (Application.isPlaying && gameBoard.BoardSize != 0)
         {
             if (GUILayout.Button("Play"))
             {
                 PlayDebugGame();
             }
+        }
+
+        EditorGUILayout.Space();
+
+        GUILayout.Label("BigWin Animation");
+        if (bigWinActive == false)
+        {
+            if (GUILayout.Button("Start", buttonOptions))
+            {
+                bigWin.ActivateBigWin();
+                bigWinActive = true;
+            } 
+        }
+        else
+        {
+            if (GUILayout.Button("Stop", buttonOptions))
+            {
+                bigWin.DeactivateBigWin();
+                bigWinActive = false;
+            }
+
+        }
+
+        EditorGUILayout.Space();
+
+        GUILayout.Label("CoinSpew");
+
+        if (coinsActive == false)
+        {
+            if (GUILayout.Button("Start", buttonOptions))
+            {
+                bigWin.ActivateCoins();
+                coinsActive = true;
+            }
+        }
+        else
+        {
+            if (GUILayout.Button("Stop", buttonOptions))
+            {
+                bigWin.DeactivateCoins();
+                coinsActive = false;
+            }
+
         }
 
     }
@@ -97,7 +147,7 @@ public class DebugWindow : EditorWindow
         GameStateMachine.DebugSettings settings = new GameStateMachine.DebugSettings();
         settings.playBackSpeed = playBackSpeed;
 
-        int boardSize = gameSM.BoardSize;
+        int boardSize = gameBoard.BoardSize;
         List<int> winningMoves = new List<int>();
 
         switch ((WIN_TYPES)selectedWinType)
@@ -177,14 +227,14 @@ public class DebugWindow : EditorWindow
         testMoves.Sort();
 
         int firstMove = testMoves[0];
-        int col = firstMove % gameSM.BoardSize;
+        int col = firstMove % gameBoard.BoardSize;
         int lastMove = firstMove;
 
         for (int i = 1; i < testMoves.Count; i++)
         {
             if (colWin)
             {
-                colWin = testMoves[i] % gameSM.BoardSize == col;
+                colWin = testMoves[i] % gameBoard.BoardSize == col;
             }
             if (rowWin)
             {
@@ -223,6 +273,6 @@ public class DebugWindow : EditorWindow
     private void PlayDebugGame()
     {
         GameStateMachine.DebugSettings settings = GenerateDebugGame();
-        gameSM.PlayDebugGame(settings);
+        FindObjectOfType<GameStateMachine>().PlayDebugGame(settings);
     }
 }

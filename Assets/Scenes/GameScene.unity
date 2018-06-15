@@ -510,8 +510,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchoredPosition: {x: 0, y: -25}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &190458258
 Canvas:
@@ -545,15 +545,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.34279916, g: 0.7647059, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 4f56d699fc4facf4fb6ae8cb4060e2e9, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1421,15 +1421,15 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: Pick A Symbol
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 715b80e429c437e40867928a4e1fc975, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 715b80e429c437e40867928a4e1fc975, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 09641b029dfa78843902b548a9de7553, type: 2}
+  m_sharedMaterial: {fileID: 2147374, guid: 09641b029dfa78843902b548a9de7553, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4290718756
+  m_fontColor: {r: 0.14338236, g: 0.17266725, b: 0.75, a: 1}
   m_enableVertexGradient: 0
   m_fontColorGradient:
     topLeft: {r: 1, g: 1, b: 1, a: 1}
@@ -1484,7 +1484,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -35.590767, y: 0, z: -39.95231, w: -40.17202}
+  m_margin: {x: -7.1102533, y: 0, z: -21.964556, w: -40.17202}
   m_textInfo:
     textComponent: {fileID: 619907261}
     characterCount: 13
@@ -1921,7 +1921,7 @@ RectTransform:
   m_GameObject: {fileID: 797355157}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1017348076}
   - {fileID: 31008019}
@@ -2396,15 +2396,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.51896554, g: 0, b: 0.63235295, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 0c37198b11fe16f4aa80d756820d1c09, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2669,130 +2669,20 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
+    - target: {fileID: 199003658708791942, guid: c1f02ac4e022eb5499552a29f47a09e3,
         type: 2}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: randomSeed
-      value: -508123709
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.maxColor.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.maxColor.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.91724133
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: moveWithTransform
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: EmissionModule.rateOverTime.scalar
-      value: 0
+      propertyPath: m_SortingLayerID
+      value: 1841606953
       objectReference: {fileID: 0}
     - target: {fileID: 199003658708791942, guid: c1f02ac4e022eb5499552a29f47a09e3,
         type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 7898de8d7015b04489f83315f4e49162, type: 2}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.minMaxState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.maxGradient.key0.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.maxGradient.key0.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.maxGradient.key1.r
-      value: 0.63235295
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.maxGradient.key1.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.maxGradient.key1.b
-      value: 0.58874243
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.minColor.r
-      value: 0.94482756
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.minColor.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startColor.minColor.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: RotationModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: RotationModule.x.minMaxState
+      propertyPath: m_SortingLayer
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
+    - target: {fileID: 199003658708791942, guid: c1f02ac4e022eb5499552a29f47a09e3,
         type: 2}
-      propertyPath: RotationModule.y.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: RotationModule.curve.minMaxState
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: RotationModule.curve.minScalar
-      value: -1.5707963
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: RotationModule.curve.scalar
-      value: 1.5707963
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 1.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 198521969854296720, guid: c1f02ac4e022eb5499552a29f47a09e3,
-        type: 2}
-      propertyPath: EmissionModule.rateOverDistance.scalar
-      value: 8
+      propertyPath: m_SortingOrder
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c1f02ac4e022eb5499552a29f47a09e3, type: 2}
@@ -2821,7 +2711,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1253805514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1784088637}
@@ -2829,8 +2719,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchoredPosition: {x: 0, y: -25}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1253805517
 MonoBehaviour:
@@ -2844,15 +2734,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.07581115, b: 0.8455882, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 0c37198b11fe16f4aa80d756820d1c09, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

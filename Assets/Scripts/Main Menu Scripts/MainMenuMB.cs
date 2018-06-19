@@ -38,6 +38,11 @@ public class MainMenuMB : MonoBehaviour
         }
     }
 
+    public void StartSinglePlayerGame()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
+
     public void StartTwoPlayerGame()
     {
         SceneManager.LoadScene("GameScene");

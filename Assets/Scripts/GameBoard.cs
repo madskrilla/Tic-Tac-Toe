@@ -24,6 +24,12 @@ public class GameBoard : MonoBehaviour
     private Sprite playerOneSprite;
     private Sprite playerTwoSprite;
 
+    private List<int> openTiles = new List<int>();
+    public List<int> OpenTiles
+    {
+        get { return openTiles; }
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -61,6 +67,7 @@ public class GameBoard : MonoBehaviour
             for (int j = 0; j < boardSize; j++)
             {
                 int tileIndex = i + (j * boardSize);
+                openTiles.Add(tileIndex);
                 GameObject newTile = GameObject.Instantiate<GameObject>(TilePrefab);
                 //Initialize Object Transform
                 newTile.transform.parent = BoardCenter;
@@ -86,9 +93,18 @@ public class GameBoard : MonoBehaviour
         }
     }
 
+    public void EnablePicks(bool enable)
+    {
+        foreach (TileMB tile in board)
+        {
+            tile.EnablePick(enable);
+        }
+    }
+
     public void SelectTile(int index, TileMB.TileState tileOwner)
     {
         board[index].SetSelectedStatus(tileOwner);
+        openTiles.Remove(index);
     }
 
     public BoardEvaluator.WinInfo EvaluateBoard(int lastSelection)
@@ -98,8 +114,13 @@ public class GameBoard : MonoBehaviour
 
     public void ResetBoard()
     {
+        openTiles.Clear();
+
+        int tileIndex = 0;
         foreach (TileMB tile in board)
         {
+            openTiles.Add(tileIndex);
+            tileIndex++;
             tile.ResetTile();
         }
     }

@@ -75,6 +75,14 @@ public class TileMB : MonoBehaviour
         glowParticles.Stop();
     }
 
+    public void EnablePick(bool enable)
+    {
+        if (selectedState == TileState.OPEN)
+        {
+            GetComponent<Collider2D>().enabled = enable; 
+        }
+    }
+
     private void AttempSelection()
     {
         if (selectedState != TileState.OPEN)
@@ -83,8 +91,6 @@ public class TileMB : MonoBehaviour
         }
         else
         {
-            tileCollider.enabled = false;
-
             TileSelectedMsg msg = new TileSelectedMsg
             {
                 SelectedIndex = tileIndex
@@ -114,6 +120,7 @@ public class TileMB : MonoBehaviour
         }
 
         StartCoroutine(FadeSymbolOn());
+        tileCollider.enabled = false;
     }
 
     private IEnumerator FadeSymbolOn()

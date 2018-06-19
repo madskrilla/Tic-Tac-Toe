@@ -10,6 +10,13 @@ public class RandomNumberUtil
         return UnityEngine.Random.Range(min, max);
     }
 
+    public static int GetRandomValue(List<int> range)
+    {
+        int randIndex = Random.Range(0, range.Count - 1);
+        return range[randIndex];
+    }
+
+
     public static float GetRandomValue(float min, float max)
     {
         return UnityEngine.Random.Range(min, max);

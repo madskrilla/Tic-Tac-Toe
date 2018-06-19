@@ -29,6 +29,7 @@ public class GameStateMachine : MonoBehaviour
     private State currentState;
 
     private GameBoard gameBoard;
+    private BaseAgent aiPlayer;
 
     private int turnCount = 1;
 
@@ -44,8 +45,7 @@ public class GameStateMachine : MonoBehaviour
     void Start()
     {
         AddState(new State("SetPlayerIcons", OpenIconMenu));
-        AddState(new State("SelectBoardSize", OpenBoardSizeMenu));
-        AddState(new State("WaitForPick", null));
+        AddState(new State("WaitForPick", EnablePickState));
         AddState(new State("Evaluate", EvaluateGameState));
         AddState(new State("GameOver", GameOver));
 
@@ -53,10 +53,11 @@ public class GameStateMachine : MonoBehaviour
 
         Messenger.GetInstance().RegisterListener(new TileSelectedMsg(), WaitForPick);
         Messenger.GetInstance().RegisterListener(new ResetGameMsg(), Reset);
-        Messenger.GetInstance().RegisterListener(new ResizeBoardMsg(), ResizeBoard);
         Messenger.GetInstance().RegisterListener(new SymbolSelectionMsg(), SetPlayerSymbol);
 
         gameBoard = GetComponent<GameBoard>();
+        aiPlayer = new EasyAgent();
+        aiPlayer.Board = gameBoard;
     }
 
     private void OpenBoardSizeMenu()
@@ -87,7 +88,7 @@ public class GameStateMachine : MonoBehaviour
     {
         ResizeBoardMsg resizeMsg = msg as ResizeBoardMsg;
 
-        gameBoard.SetPlayerSymbols(PlayerOneSymbol.sprite, PlayerTwoSymbol.sprite);
+        
         gameBoard.CreateGameBoard(resizeMsg.Size);
 
         SwitchState("WaitForPick");
@@ -103,11 +104,13 @@ public class GameStateMachine : MonoBehaviour
         }
         else
         {
-            PlayerTwoSymbol.sprite = selection.symbol; 
+            PlayerTwoSymbol.sprite = selection.symbol;
             PlayerTwoSymbol.color = inactivePlayerColor;
+
             if (gameBoard.BoardSize == 0)
             {
-                SwitchState("SelectBoardSize");
+                gameBoard.SetPlayerSymbols(PlayerOneSymbol.sprite, PlayerTwoSymbol.sprite);
+                gameBoard.CreateGameBoard(3);
             }
             else
             {
@@ -160,19 +163,26 @@ public class GameStateMachine : MonoBehaviour
         }
     }
 
+    private void EnablePickState()
+    {
+        gameBoard.EnablePicks(true);
+        if (playerOne == false)
+        {
+            StartCoroutine(aiPlayer.Pick());
+        }
+    }
+
     private void WaitForPick(Message msg)
     {
-        //Ignore Tile Selection Msg if Not Waiting For Pick
-        if (currentState.stateName == "WaitForPick")
-        {
-            TileSelectedMsg tileSelected = msg as TileSelectedMsg;
-            lastSelectedTile = tileSelected.SelectedIndex;
-            TileMB.TileState tileOwner = playerOne ? TileMB.TileState.PLAYER1 : TileMB.TileState.PLAYER2;
-            gameBoard.SelectTile(lastSelectedTile, tileOwner);
+        TileSelectedMsg tileSelected = msg as TileSelectedMsg;
+        lastSelectedTile = tileSelected.SelectedIndex;
+        TileMB.TileState tileOwner = playerOne ? TileMB.TileState.PLAYER1 : TileMB.TileState.PLAYER2;
+        gameBoard.SelectTile(lastSelectedTile, tileOwner);
 
-            Debug.Log(string.Format("Tile {0} Was Selected", lastSelectedTile));
-            SwitchState("Evaluate");
-        }
+        Debug.Log(string.Format("Tile {0} Was Selected", lastSelectedTile));
+        SwitchState("Evaluate");
+
+        gameBoard.EnablePicks(false);
     }
 
     private void EvaluateGameState()
@@ -211,7 +221,7 @@ public class GameStateMachine : MonoBehaviour
         Messenger.GetInstance().BroadCastMessage(msg);
     }
 
-#region Debug Code
+    #region Debug Code
 
     public struct DebugSettings
     {
@@ -238,5 +248,5 @@ public class GameStateMachine : MonoBehaviour
             yield return delayBetweenMoves;
         }
     }
-#endregion
+    #endregion
 }
